@@ -1,3 +1,3 @@
  clear
- g++ -o shell main.cpp
+ g++   main.cpp commands.cpp -o shell #add file to be compiled before -o
  ./shell
