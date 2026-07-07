@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include<string>
+#include "command.h" //include command.h to use executeEcho function
 
 using namespace std;
 
@@ -24,7 +25,7 @@ int main(){
         cout << "You typed: "<<command << endl; //put user input to shell
 
         if(command.substr(0,4)=="echo"){
-            cout << command.substr(5) <<endl; //echo command to shell
+            executeEcho(command); //call function executeEcho
         }
 
     }
