@@ -4,5 +4,6 @@
 #include<string>
 
 void executeEcho(std::string command);
+void executePwd();
 
 #endif

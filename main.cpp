@@ -28,6 +28,10 @@ int main(){
             executeEcho(command); //call function executeEcho
         }
 
+        if(command.substr(0,3)=="pwd"){
+            executePwd(); //call function executePwd
+        }
+
     }
 
 }
