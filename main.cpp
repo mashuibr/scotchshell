@@ -21,6 +21,9 @@ void commandRedirect(string command, string argument){
     if(command=="pwd"){
         executePwd(); //call function executePwd
     }
+    if(command=="ls"){
+        executels(); //call function executels
+    }
 }
 
 int main(){

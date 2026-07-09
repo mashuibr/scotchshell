@@ -5,5 +5,6 @@
 
 void executeEcho(std::string statement);
 void executePwd();
+void executels();
 
 #endif
