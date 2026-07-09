@@ -14,7 +14,7 @@ int main(){
 
     while(true){
 
-        cout << "mashu@scotch:  ";//test print
+        cout <<"\033[36m"<< "mashu@scotch: "<< "\033[0m";//test print
 
         getline(cin, command); //get user input from shell
 
