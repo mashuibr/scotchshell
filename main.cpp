@@ -8,29 +8,43 @@
 
 using namespace std;
 
+void commandRedirect(string command, string argument){
+    if(command == "exit"){
+        exit(0); //exit shell with exit as command
+    }
+ 
+
+    if(command=="echo"){
+        executeEcho(argument); //call function executeEcho
+    }
+
+    if(command=="pwd"){
+        executePwd(); //call function executePwd
+    }
+}
+
 int main(){
 
-    string command;
+    string instruction, command, argument;
 
     while(true){
 
         cout <<"\033[36m"<< "mashu@scotch: "<< "\033[0m";//test print
 
-        getline(cin, command); //get user input from shell
+        getline(cin, instruction); //get user input from shell
 
-        if(command == "exit"){
-            break; //exit shell with exit as command
+        // Extract command and argument
+        size_t index = instruction.find(' ');
+        if(index == string::npos){
+            command = instruction;
+            argument = "";
         }
-
-        cout << "You typed: "<<command << endl; //put user input to shell
-
-        if(command.substr(0,4)=="echo"){
-            executeEcho(command); //call function executeEcho
+        else{
+            command = instruction.substr(0, index);
+            argument = instruction.substr(index + 1);
         }
-
-        if(command.substr(0,3)=="pwd"){
-            executePwd(); //call function executePwd
-        }
+       // cout << "You typed: "<<command << endl; //put user input to shell
+        commandRedirect(command, argument); //call function commandRedirect to execute command
 
     }
 

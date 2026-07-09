@@ -6,8 +6,8 @@
 
 using namespace std;
 
-void executeEcho(string command){
-    cout << command.substr(5) << endl; //print the string after echo command
+void executeEcho(string statement){
+    cout << statement << endl; //print the string after echo command
 }
 
 void executePwd(){

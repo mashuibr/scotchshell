@@ -3,7 +3,7 @@
 
 #include<string>
 
-void executeEcho(std::string command);
+void executeEcho(std::string statement);
 void executePwd();
 
 #endif
