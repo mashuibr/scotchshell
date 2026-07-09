@@ -17,6 +17,12 @@ void executePwd(){
     cout << result << endl;
 }
 
+string getPrompt(){
+    char buffer[100];
+    char *result = getcwd(buffer, 100); //get current working directory
+    return string(result);
+}
+
 void executels(){
     DIR* dir= opendir(".");
     struct dirent *head;
@@ -25,4 +31,13 @@ void executels(){
             continue;
         cout<< head->d_name <<endl;
     }
+}
+
+void executeCd(string path){
+    if(chdir(path.c_str()) != 0){
+        perror("chdir failed");
+    }
+    else{
+        cout << "Changed directory to: " << path << endl;
+    } //change directory to the specified path
 }

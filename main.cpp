@@ -3,6 +3,7 @@
 //hey yooo
 
 #include <iostream>
+#include <unistd.h>
 #include<string>
 #include "command.h" //include command.h to use executeEcho function
 
@@ -14,25 +15,33 @@ void commandRedirect(string command, string argument){
     }
  
 
-    if(command=="echo"){
+    else if(command=="echo"){
         executeEcho(argument); //call function executeEcho
     }
 
-    if(command=="pwd"){
+    else if(command=="pwd"){
         executePwd(); //call function executePwd
     }
-    if(command=="ls"){
+
+    else if(command=="ls"){
         executels(); //call function executels
     }
+    else if(command=="cd"){
+        executeCd(argument); //call function executeCd
+    }
+    else{
+        cout << "Command not found: " << command << endl; //print error message if command is not found
+    }
+
 }
 
 int main(){
 
     string instruction, command, argument;
-
+    // string currentDirectory = getPrompt(); //get current working directory
     while(true){
 
-        cout <<"\033[36m"<< "mashu@scotch: "<< "\033[0m";//test print
+        cout <<"\033[36m"<< "mashu@scotch:" << getPrompt()<<"\033[0m";//test print
 
         getline(cin, instruction); //get user input from shell
 
