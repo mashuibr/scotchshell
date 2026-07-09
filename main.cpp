@@ -14,7 +14,7 @@ int main(){
 
     while(true){
 
-        cout << "my shell> ";//test print
+        cout << "mashu@scotch:  ";//test print
 
         getline(cin, command); //get user input from shell
 
