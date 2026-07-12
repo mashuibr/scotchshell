@@ -9,9 +9,9 @@ A learning project to understand how shells work by building one from scratch in
 
 ## 📋 Project Overview
 
-This project implements a basic interactive shell in C++ similar to bash/sh. It parses user commands, executes built-in operations, and handles command-line arguments. This is an educational journey into understanding shell architecture and design patterns.
+This project implements a basic interactive shell in C++ similar to bash/sh. It parses user commands, executes built-in operations, shows a dynamic prompt, and handles simple command-line arguments. This is an educational journey into understanding shell architecture and design patterns.
 
-**Current Status:** Basic implementation with core shell loop and initial command handlers
+**Current Status:** Basic implementation with core shell loop, built-in commands, and prompt customization
 
 ---
 
@@ -23,7 +23,7 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 ┌─────────────────────────────────────────────────┐
 │         Shell Loop (main.cpp)                   │
 │  - Infinite loop for command input              │
-│  - User prompt rendering                        │
+│  - Colored prompt rendering                     │
 │  - Input parsing (command + arguments)          │
 └──────────────┬──────────────────────────────────┘
                │
@@ -32,11 +32,12 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 │    Command Router (commandRedirect)             │
 │  - Routes commands to appropriate handlers      │
 │  - Implements built-in commands                 │
+│  - Handles unknown commands                     │
 └──────────────┬──────────────────────────────────┘
                │
       ┌────────┼────────┐
       ▼        ▼        ▼
-   echo      pwd      exit    ... (more commands)
+    echo      pwd      ls      cd      exit
    commands.cpp (Implementation details)
 ```
 
@@ -44,7 +45,7 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 
 - **main.cpp** - Shell loop, input parsing, command routing
 - **command.h** - Function declarations for command handlers
-- **commands.cpp** - Implementation of built-in commands
+- **commands.cpp** - Implementation of built-in commands and prompt logic
 - **compile.sh** - Build script
 
 ### Data Flow
@@ -54,7 +55,7 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 3. String parsing finds first space at index 5
 4. Split into: command=`"echo"`, argument=`"hello world"`
 5. `commandRedirect()` routes to `executeEcho()`
-6. Output printed, loop continues
+6. Output printed, loop continues with the updated prompt path
 
 ---
 
@@ -64,23 +65,28 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 - [x] Interactive shell loop with continuous input handling
 - [x] Basic command parsing (command + single argument string)
 - [x] Command routing/dispatcher pattern
-- [x] Built-in commands: `echo`, `pwd`, `exit`
-- [x] Colored prompt output (`\033[36m` ANSI codes)
+- [x] Built-in commands: `echo`, `pwd`, `ls`, `cd`, `exit`
+- [x] Colored prompt output (`\033[36m` and `\033[33m` ANSI codes)
+- [x] Prompt path shortened to `~` when inside `HOME`
+- [x] Unknown command feedback
 - [x] Basic compilation setup
 
 ### 🔄 Current Focus (Phase 2: Expansion)
 - [ ] Multiple arguments parsing (argv-style)
+- [ ] Quoted string support
 - [ ] stdin/stdout redirection (`>`, `<`, `>>`)
 - [ ] Pipes (`|`) between commands
 - [ ] Background execution (`&`)
 - [ ] Command history
+- [ ] Safer error handling around system calls
 
 ### 📋 Future Work (Phase 3: Advanced)
 - [ ] Environment variables (`$PATH`, `$HOME`, etc.)
 - [ ] Script file execution
 - [ ] Wildcards and globbing (`*`, `?`)
 - [ ] Signal handling (Ctrl+C, Ctrl+Z)
-- [ ] More built-in commands (`cd`, `ls`, `cat`, etc.)
+- [ ] More built-in commands (`cat`, `mkdir`, `rm`, etc.)
+- [ ] Command lookup in `PATH`
 - [ ] Error handling and validation
 
 ### 🎓 Planned Learning Topics
@@ -96,21 +102,25 @@ This project implements a basic interactive shell in C++ similar to bash/sh. It 
 
 ### C++ Concepts Applied
 - **String handling**: `getline()`, `substr()`, `find()` for parsing
-- **ANSI escape codes**: Terminal color manipulation with `\033[36m` sequences
+- **ANSI escape codes**: Terminal color manipulation with `\033[36m` and `\033[33m` sequences
 - **Standard library**: `<iostream>`, `<string>`, `<unistd.h>`
-- **Function pointers pattern**: Command routing using if-statements (foundation for callbacks)
+- **Branching-based dispatch**: Command routing using `if` / `else if`
 - **Buffer management**: Fixed-size buffers with `getcwd()`
+- **Directory traversal**: Listing entries with `opendir()` / `readdir()`
+- **Directory changes**: Updating the working directory with `chdir()`
 
 ### Shell Design Insights
 1. **Simplicity first**: A shell is just a loop that reads → parses → executes
 2. **Command dispatching**: Router pattern cleanly separates concerns
 3. **Input parsing**: String manipulation is fundamental to shell functionality
-4. **System calls**: Direct OS interaction via library functions like `getcwd()`
+4. **System calls**: Direct OS interaction via functions like `getcwd()` and `chdir()`
+5. **Prompt state matters**: The current working directory is part of the shell experience
 
 ### Development Workflow
 - Iterative feature addition with recompilation
 - The importance of simple build scripts
 - Keeping headers clean and minimal
+- Updating documentation as the shell grows helps keep the project honest
 
 ---
 
@@ -266,6 +276,23 @@ if (getcwd(buffer, sizeof(buffer)) != nullptr) {
 
 ---
 
+### 8. **Assuming `cd` Should Print the New Path Only on Success**
+```cpp
+// ❌ WRONG - No feedback or unclear failure handling
+if (chdir(path.c_str()) != 0) {
+    // ignored
+}
+
+// ✅ BETTER - Report the error clearly
+if (chdir(path.c_str()) != 0) {
+    perror("chdir failed");
+}
+```
+
+**Why:** Directory changes affect shell state, so clear feedback is important when the operation fails.
+
+---
+
 ## 🚀 How to Build & Run
 
 ### Prerequisites
@@ -293,6 +320,20 @@ hello
 mashu@scotch: pwd
 /home/mashu/Developer/cpp/shell
 
+mashu@scotch: ls
+command.h
+commands.cpp
+compile.sh
+main.cpp
+shell
+rough-work
+
+mashu@scotch: cd rough-work
+Changed directory to: rough-work
+
+mashu@scotch: pwd
+/home/mashu/Developer/cpp/shell/rough-work
+
 mashu@scotch: exit
 ```
 
@@ -301,7 +342,7 @@ mashu@scotch: exit
 ## 📝 Next Steps
 
 1. **Improve parsing**: Handle multiple arguments and quoted strings
-2. **Add more commands**: Implement `cd`, `ls`, `cat`, `mkdir`
+2. **Add more commands**: Implement `cat`, `mkdir`, `rm`
 3. **Error handling**: Graceful error messages and exit codes
 4. **Process execution**: Use `fork()` and `exec()` for external programs
 5. **Redirection**: Implement `>`, `<`, `>>` for file I/O
