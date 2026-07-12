@@ -1,5 +1,6 @@
 #include<iostream>
-#include<string>
+#include <stdio.h>
+#include<cstring>
 #include <unistd.h>
 #include <dirent.h>
 
@@ -18,9 +19,16 @@ void executePwd(){
 }
 
 string getPrompt(){
+    const char* home = getenv("HOME"); //get home directory path
     char buffer[100];
-    char *result = getcwd(buffer, 100); //get current working directory
-    return string(result);
+    char *path= getcwd(buffer, 100); //get current working directory
+    string path_string=string(path);
+
+    if (path_string.rfind(home, 0) == 0){
+        path_string = "~" + path_string.substr(strlen(home)); //replace home directory path with ~
+    }
+    
+    return path_string;
 }
 
 void executels(){

@@ -35,13 +35,14 @@ void commandRedirect(string command, string argument){
 
 }
 
+
 int main(){
 
     string instruction, command, argument;
     // string currentDirectory = getPrompt(); //get current working directory
     while(true){
 
-        cout <<"\033[36m"<< "mashu@scotch:" << getPrompt()<<"\033[0m";//test print
+        cout <<"\033[36m"<< "mashu@scotch"<<"\033[0m"<<":" <<"\033[33m"<< getPrompt()<<"\033[0m"<<"$ ";//test print
 
         getline(cin, instruction); //get user input from shell
 
